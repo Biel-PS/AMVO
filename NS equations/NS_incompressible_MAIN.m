@@ -116,8 +116,9 @@ function meshPlotter (mesh,type)
         case "halo"
             figure ();
             hold on
-            scatter(mesh.centralNodCoordHalo(:,1),mesh.centralNodCoordHalo(:,2));
-            scatter(mesh.centralNodCoord(:,1),mesh.centralNodCoord(:,2))
+            scatter(mesh.centralNodCoordHalo(:,1),mesh.centralNodCoordHalo(:,2),"red");
+            scatter(mesh.centralNodCoord(:,1),mesh.centralNodCoord(:,2),"blue")
+            hold off
             grid on;
     end
 end
