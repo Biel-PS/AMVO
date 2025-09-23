@@ -1,4 +1,4 @@
-clear; clc;
+clear; clc;close all
 
 
 geometry.xLength = 4;
@@ -10,7 +10,17 @@ meshType = "uniform";
 
 mesh = deffineMesh(geometry,meshType);
 
-scatter(mesh.centralNodCoord(:,1),mesh.centralNodCoord(:,2))
+meshPlotter(mesh);
+
+
+
+
+
+
+
+
+
+
 
 function mesh = deffineMesh(geometry,meshType)
     
@@ -58,12 +68,22 @@ function mesh = deffineMesh(geometry,meshType)
     mesh.numNodes = [1,1:n*m];
     mesh.n = n;
     mesh.m = m;
-
-    
-    % mesh.fullNodCoordMatrix(:,:,1,1) = reshape(X', n, m);
-    % mesh.fullNodCoordMatrix(:,:,1,2) = reshape(Y', n, m);  
+ 
     mesh.fullNodCoordMatrix(:,:,1) = reshape(X', n, m);  % x-coordinates
     mesh.fullNodCoordMatrix(:,:,2) = reshape(Y', n, m);  % y-coordinates
+end
+
+function mesh = createHalo (mesh)
+    horizontalElem = n+1;
+    verticalElem = m+1;
+
+    xCenters = 0:deltaX:xLength - deltaX/2;
+    yCenters = 0:deltaY:yLength - deltaY/2;  
+    
+    [X,Y] = meshgrid(xCenters, yCenters);
+ 
+    mesh.fullNodCoordMatrixWitHalo(:,:,1) = reshape(X', n, m);  % x-coordinates
+    mesh.fullNodCoordMatrixWitHalo(:,:,2) = reshape(Y', n, m);  % y-coordinates
 end
 
 
@@ -76,7 +96,19 @@ function coord = getAverageNodeFromCentralNode(mesh,node1Index,node2Index)
 
 end
 
-function 
+function meshPlotter (mesh,type)
+
+    switch type
+        case "mesh"
+            figure ();
+            scatter(mesh.centralNodCoord(:,1),mesh.centralNodCoord(:,2));
+            grid on;
+        case "halo"
+            figure ();
+            scatter(mesh.centralNodCoordHalo(:,1),mesh.centralNodCoord(:,2));
+            grid on;
+    end
+end
 
 
 function verifyCodeError (type,data)

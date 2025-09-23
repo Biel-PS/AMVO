@@ -9,8 +9,19 @@ geometry.verticalElementCount = 3;
 meshType = "uniform";
 
 mesh = deffineMesh(geometry,meshType);
+mesh = createHalo(mesh);
 
-meshPlotter(mesh);
+meshPlotter(mesh,"halo");
+
+
+
+
+
+
+
+
+
+
 
 function mesh = deffineMesh(geometry,meshType)
     
@@ -58,12 +69,31 @@ function mesh = deffineMesh(geometry,meshType)
     mesh.numNodes = [1,1:n*m];
     mesh.n = n;
     mesh.m = m;
-
-    
-    % mesh.fullNodCoordMatrix(:,:,1,1) = reshape(X', n, m);
-    % mesh.fullNodCoordMatrix(:,:,1,2) = reshape(Y', n, m);  
+ 
     mesh.fullNodCoordMatrix(:,:,1) = reshape(X', n, m);  % x-coordinates
     mesh.fullNodCoordMatrix(:,:,2) = reshape(Y', n, m);  % y-coordinates
+end
+
+function mesh = createHalo (mesh)
+    
+    deltaX = mesh.deltaX;
+    deltaY = mesh.deltaY;
+    xLength = mesh.xLength;
+    yLength = mesh.yLength;
+
+    n = mesh.n +2;
+    m = mesh.m +2;
+    
+    xCenters = -deltaX/2:deltaX:(xLength+deltaX/2);
+    yCenters = -deltaY/2:deltaY:(yLength+deltaY/2);  
+    
+    [X,Y] = meshgrid(xCenters, yCenters);
+    
+    mesh.centralNodCoordHalo(:,1) = X(:);
+    mesh.centralNodCoordHalo(:,2) = Y(:);
+
+    mesh.fullNodCoordMatrixWitHalo(:,:,1) = reshape(X', n, m);  % x-coordinates
+    mesh.fullNodCoordMatrixWitHalo(:,:,2) = reshape(Y', n, m);  % y-coordinates
 end
 
 
@@ -76,10 +106,20 @@ function coord = getAverageNodeFromCentralNode(mesh,node1Index,node2Index)
 
 end
 
-function meshPlotter (mesh)
-    figure ();
-    scatter(mesh.centralNodCoord(:,1),mesh.centralNodCoord(:,2));
-    grid on;
+function meshPlotter (mesh,type)
+
+    switch type
+        case "mesh"
+            figure ();
+            scatter(mesh.centralNodCoord(:,1),mesh.centralNodCoord(:,2));
+            grid on;
+        case "halo"
+            figure ();
+            hold on
+            scatter(mesh.centralNodCoordHalo(:,1),mesh.centralNodCoordHalo(:,2));
+            scatter(mesh.centralNodCoord(:,1),mesh.centralNodCoord(:,2))
+            grid on;
+    end
 end
 
 
