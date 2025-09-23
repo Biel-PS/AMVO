@@ -1,0 +1,83 @@
+clear; clc;
+
+
+geometry.xLength = 4;
+geometry.yLength = 3;
+geometry.horizontalElementCount = 4;
+geometry.verticalElementCount = 3;
+
+meshType = "uniform";
+
+deffineMesh(geometry,meshType)
+
+function mesh = deffineMesh(geometry,meshType)
+    
+
+    verifyCodeError ('zero',geometry)
+
+
+    xLength = geometry.xLength;
+    yLength = geometry.yLength;
+
+    n = geometry.horizontalElementCount;
+    m = geometry.verticalElementCount;
+
+    switch meshType
+        case "uniform"    
+            deltaX = xLength/n;
+            deltaY = yLength/m;
+
+        case "irregular"
+            
+            deltaX = geometry.deltaX;
+            deltaY = geometry.deltaY;
+
+        otherwise
+
+            verifyCodeError ('unconsidered',meshType)
+    end
+    % We always set the origin of coordenates to left bottom node
+   
+
+    xCenters = deltaX/2:deltaX:xLength - deltaX/2;
+    yCenters = deltaY/2:deltaY:yLength - deltaY/2;  
+    
+    [X,Y] = meshgrid(xCenters, yCenters);
+    
+    mesh.centralNodCoord(:,1) = X(:);
+    mesh.centralNodCoord(:,2) = Y(:);
+
+
+    mesh.deltaX = deltaX;
+    mesh.deltaY = deltaY;
+    mesh.xLength = xLength;
+    mesh.yLength = yLength;
+
+    mesh.numNodes = [1,1:n*m];
+    mesh.n = n;
+    mesh.m = m;
+
+    
+    mesh.fullNodCoordMatrix(:,:,1,1) = reshape(X', n, m);
+    mesh.fullNodCoordMatrix(:,:,1,2) = reshape(Y', n, m);  
+
+end
+
+
+
+
+function verifyCodeError (type,data)
+    switch type
+        case "zero"
+            fn = fieldnames(data);
+            for i = 1:numel(fn)
+                value = data.(fn{i});
+                if value == 0
+                    error('Variable %s has invalid value: %g', fn{i}, value);
+                end
+            end
+
+        case "unconsidered"
+            error ("unconsidered option set");
+    end
+end
