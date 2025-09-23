@@ -1,4 +1,4 @@
-clear; clc;close all
+clear; clc;
 
 
 geometry.xLength = 4;
@@ -10,7 +10,7 @@ meshType = "uniform";
 
 mesh = deffineMesh(geometry,meshType);
 
-meshPlotter(mesh);
+scatter(mesh.centralNodCoord(:,1),mesh.centralNodCoord(:,2))
 
 function mesh = deffineMesh(geometry,meshType)
     
@@ -76,11 +76,7 @@ function coord = getAverageNodeFromCentralNode(mesh,node1Index,node2Index)
 
 end
 
-function meshPlotter (mesh)
-    figure ();
-    scatter(mesh.centralNodCoord(:,1),mesh.centralNodCoord(:,2));
-    grid on;
-end
+function 
 
 
 function verifyCodeError (type,data)
