@@ -3,6 +3,8 @@ clear; clc; close all;
 L = 3;
 N = 3;
 h = L/N;
+tau = 0.001;
+
 syms x y
 
 [u,v] = set_velocity_field();
