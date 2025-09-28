@@ -5,12 +5,13 @@ function CU = convective_u (U,V,L)
     h = L/n;
     CU = zeros(n+2,m+2);
     
-    for i = 2:n+1
-        for j = 2:m+1
+    for i = 2:(n+1)
+        for j = 2:(m+1)
+
             [ue, uw, un, us] = obtainFaceValues (U,i,j);
-            [Fe, Fw, Fn, Fs] = obtainFlowTerms (V,h,i,j);
+            [Fe, Fw, Fn, Fs] = obtainFlowTerms (U,V,h,i,j);
             
-            CU(i,j) = (ue*Fe- uw*Fw + un*Fn - us*Fs)*h;
+            CU(i,j) = (ue*Fe - uw*Fw + un*Fn - us*Fs);
         end
     end
 
