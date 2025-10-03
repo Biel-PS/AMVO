@@ -1,4 +1,4 @@
-function CU = convective_u (U,V,L)
+function CU = convective_u (U,V,L,type)
    
     n = size(U,1)-2;
     m = size(U,2)-2;
@@ -9,10 +9,10 @@ function CU = convective_u (U,V,L)
         for j = 2:(m+1)
 
             [ue, uw, un, us] = obtainFaceValues (U,i,j);
-            [Fe, Fw, Fn, Fs] = obtainFlowTerms (U,V,h,i,j);
+            [Fe, Fw, Fn, Fs] = obtainFlowTerms (U,V,h,i,j,type);
             
             CU(i,j) = (ue*Fe - uw*Fw + un*Fn - us*Fs);
         end
-    end %hola
+    end
 
 end

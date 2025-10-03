@@ -55,16 +55,18 @@ for N = elementNumberVector
 
             DV_analytic(i,j) = tau .* dv_analytic(pointV(1),pointV(2));
             CV_analytic(i,j) = cv_analytic(pointV(1),pointV(2));
-        end
+            
+            end
+        
     end
 
     U = halo_updateFuncion(U);
     V = halo_updateFuncion(V);
 
-    CU = 1/(h^2) .* convective_u (U,V,L);
+    CU = 1/(h^2) .* convective_u (U,V,L,'u');
     DU = 1/(h^2) .* diffusive_u (U,L) .* tau;
 
-    CV = 1/(h^2) .* convective_u (V,U,L);
+    CV = 1/(h^2) .* convective_u (V,U,L,'v');
     DV = 1/(h^2) .* diffusive_u (V,L) .* tau;
     
     error_convective(counter) = max(max(abs(CU-CU_analytic)));
