@@ -34,20 +34,24 @@ for N = elementNumberVector
     U = halo_updateFuncion(U);
     V = halo_updateFuncion(V);
 
-    U = [0 0 0 0 0; 0 0 1 1 0; 0 1 1 0 0; 0 0 1 0 0; 0 0 0 0 0];
-    V = [0 0 0 0 0; 0 1 0 1 0; 0 0 0 1 0; 0 0 0 1 0; 0 0 0 0 0];
+    U = [0 0 0 0 0; 0 0 0 0 0; 0 0 1 0 0; 0 0 0 0 0; 0 0 0 0 0];
+    V = [0 0 0 0 0; 0 0 0 0 0; 0 0 0 0 0; 0 0 0 0 0; 0 0 0 0 0];
 
     N = size(U,1)-2;
+
     d = diverg(U,V);
-    b = field2vector(d);
+
+    b = field2vector(d).*h;
+
     A = laplacianMatrix(N);
     A(1,1) = -5;
     p = A\b';
+
     s = vector2field(p);
+    
+    s = halo_updateFuncion(s);
+    [gx,gy] = grad (s,h);
 
-% %     s = halo_updateFuncion(s);
-
-    [gx,gy] = gradient(s);
     Unew = U - gx;
     Vnew = V - gy;
 

@@ -1,6 +1,6 @@
 clear; clc; close all;
 
-L = 1;
+L = 0.01;
 tau = 1;
 syms x y
 
@@ -34,27 +34,33 @@ for N = elementNumberVector
     U = halo_updateFuncion(U);
     V = halo_updateFuncion(V);
 
-    U = [0 0 0 0 0; 0 0 1 -1 0; 0 0 -1 1 0; 0 0 0 0 0; 0 0 0 0 0];
-    V = [0 0 0 0 0; 0 1 0 -1 0; 0 -1 0 1 0; 0 0 0 0 0; 0 0 0 0 0];
+    U = [0 0 0 0 0; 0 0 0 0 0; 0 0 1 0 0; 0 0 0 0 0; 0 0 0 0 0];
+    V = [0 0 0 0 0; 0 0 0 0 0; 0 0 0 0 0; 0 0 0 0 0; 0 0 0 0 0];
 
     N = size(U,1)-2;
-    d = divergence(U,V);
-    b = field2vector(d);
+
+    d = diverg(U,V);
+
+    b = field2vector(d).*h;
+
     A = laplacianMatrix(N);
     A(1,1) = -5;
-    p = A\b'.*h;
+
+    p = A\b';
+
     s = vector2field(p);
 
-% %     s = halo_updateFuncion(s);
+    s = halo_updateFuncion(s);
 
-    [gx,gy] = gradient(s);
+    [gx,gy] = gradient(s,h);
+
     Unew = U - gx;
     Vnew = V - gy;
-
+  
     Unew = halo_updateFuncion(Unew);
     Vnew = halo_updateFuncion(Vnew);
 
-    divVelocityField = divergence(Unew,Vnew);
+    divVelocityField = diverg2(Unew,Vnew,h);
 end
 
 % 
