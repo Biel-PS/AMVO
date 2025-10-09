@@ -1,0 +1,14 @@
+function [gx,gy] = gradP (p,h)
+    
+    N = size(p,1)-2;
+
+    gx = zeros(N+2,N+2);
+    gy = zeros(N+2,N+2);
+
+    for j = 2:(N+1)
+        for i = 2:(N+1)
+            gx(i,j) = (p(i+2,j) - p(i-1,j))/(2*h) ;
+            gy(i,j) = (p(i,j+1) - p(i,j-1))/(2*h) ;
+        end 
+    end
+end
