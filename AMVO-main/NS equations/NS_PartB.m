@@ -1,10 +1,10 @@
 clear; clc; close all;
 
-L = 0.01;
+L = 1;
 tau = 1;
 syms x y
 
-elementNumberVector = 3;
+elementNumberVector = 4;
 elementSizeVector = L./elementNumberVector;
 
 [u,v] = set_velocity_field();
