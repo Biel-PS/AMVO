@@ -27,72 +27,67 @@ F = exp(1)^(-8*pi^2*tau*t);
 F_test = matlabFunction(F);
 p_sym = (cos(2*pi*x))^2/2 + (cos(2*pi*y))^2/2;
 
-% Derivadas simbólicas
-p_symx = diff(p_sym, x);
-p_symy = diff(p_sym, y);
+
 
 % Convertir a funciones numéricas
 p_num  = matlabFunction(p_sym,  'Vars', [x, y]);
-p_numx = matlabFunction(p_symx, 'Vars', [x, y]);
-p_numy = matlabFunction(p_symy, 'Vars', [x, y]);
-[Pressx,Pressy] = compute_u(p_numx,p_numy,N,h);
- 
+
 for i = 1:1:length(T)
-F_testing(i) = F_test(T(i));
+    F_testing(i) = F_test(T(i));
 end
 U_ana = U(3,3)*F_testing;
 V_ana = V(3,3)*F_testing;
-p_anax = Pressx(3,3);
-p_anay = Pressy(3,3);                                                                                                                                                                                                                                                                                                                                                                               
+
+dp_ana = -rho*F_testing.^2*(p_num((3*h-h/2),(3*h-h/2)) -  p_num((4*h-h/2),(3*h-h/2)));
 
 for t = T
 
-R_ant = R;    
-R = computeR(U,V,L,h,tau);
-R(:,:,1) = halo_updateFuncion(R(:,:,1));
-R(:,:,2) = halo_updateFuncion(R(:,:,2));
-deltaT(counter) = timeStep(U,V,h,tau);
-u_p = evalUp(U,V,tStep,R,R_ant);
-[u_new,divVelocityField,gPx,gPy] = computeP(h,N,u_p);
+    R_ant = R;
+    R = computeR(U,V,L,h,tau);
+    R(:,:,1) = halo_updateFuncion(R(:,:,1));
+    R(:,:,2) = halo_updateFuncion(R(:,:,2));
+    deltaT(counter) = timeStep(U,V,h,tau);
+    u_p = evalUp(U,V,tStep,R,R_ant);
+    [u_new,divVelocityField,s] = computeP(h,N,u_p);
 
-results(counter,1)=u_new(3,3,1);
-results(counter,2)=u_new(3,3,2);
-results(counter,3)=gPx(3,3);
-results(counter,4)=gPy(3,3);
-counter = counter+1
-U = u_new(:,:,1);
-V = u_new(:,:,2);
+    results(counter,1)=u_new(3,3,1);
+    results(counter,2)=u_new(3,3,2);
+    results(counter,3)=s(3,3) - s(3,4);
+
+    counter = counter+1
+    U = u_new(:,:,1);
+    V = u_new(:,:,2);
 
 end
 min(deltaT)
 
 % Testing of the code
 
-
+results(:,3) = results(:,3)*-rho/tStep;
 figure
 hold on
 
 % % Curvas numéricas (líneas continuas por defecto)
 % plot(T, results(:,1), T, results(:,2), T, results(:,3), T, results(:,4))
-% 
+%
 % % Curvas analíticas (líneas discontinuas)
 % plot(T, U_ana, '--', T, V_ana, '--', T, p_anax, '--', T, p_anay, '--')
-% 
+%
 % % Leyenda
 % legend('U numérico','V numérico','p numérico x','p numérico y', ...
 %        'U analítico','V analítico','p analítico x','p analítico y', ...
 %        'Location','best')
-% 
+%
 
 % Curvas numéricas (líneas continuas por defecto)
-plot( T, results(:,3), T, results(:,4))
+plot( T, results(:,3), T, dp_ana(:))
 
-% Curvas analíticas (líneas discontinuas)
-plot( T, p_anax, '--', T, p_anay, '--')
-
-% Leyenda
-legend('p numérico x','p numérico y', ...
-       'p analítico x','p analítico y', ...
-       'Location','best')
+% % Curvas analíticas (líneas discontinuas)
+% plot( T, p_anax, '--', T, p_anay, '--')
+% 
+% % Leyenda
+legend('p numérico ', ...
+     'p analítico ', ...
+     'Location','best')
 
 

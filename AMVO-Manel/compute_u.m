@@ -11,13 +11,6 @@ function [U,V] = compute_u(u_num,v_num,N,h)
             U(i,j) = u_num(pointU(1),pointU(2));
             V(i,j) = v_num(pointV(1),pointV(2));
     
-         end
-        
+        end
     end
-    
-    
-    
-    % U = [0 0 0 0 0; 0 0 0 0 0; 0 0 1 0 0; 0 0 0 0 0; 0 0 0 0 0];
-    % V = [0 0 0 0 0; 0 0 0 0 0; 0 0 0 0 0; 0 0 0 0 0; 0 0 0 0 0];
-
 end

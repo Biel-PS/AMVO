@@ -1,4 +1,4 @@
-function [u_new,divVelocityField,gx,gy] = computeP(h,N,u_p)
+function [u_new,divVelocityField,s] = computeP(h,N,u_p)
 
     U = u_p(:,:,1);
     V = u_p(:,:,2);
