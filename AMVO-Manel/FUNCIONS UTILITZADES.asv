@@ -1,6 +1,7 @@
 PART A                    
 
-NS_V2.m
+NS_PartA.m              OK  
+compute_u.m             OK
 set_velocity_field.m    OK
 diffusive_u_sym.m       OK
 convective_u_sym.m      OK
@@ -11,6 +12,34 @@ avgField.m              OK
 obtainFlowTerms.m       OK
 diffusive_u.m           OK
 print_field.m           OK està comentat en el codi   
+
 -------------------------------
 PART B
+
+NS_partB.m              OK potser cal revisar implementació
+set_velocity_field.m    OK
+halo_updateFunction.m   OK
+diverg.m                OK
+field2vector.m          OK
+laplacianMatrix.m       OK
+vector2field.m          OK
+gradP.m                 OK
+diverg2.m               OK
+       
+-------------------------------
+PART C
+
+NS_partC.m          
+set_velocity_field.m    OK
+compute_u.m             OK
+halo_updateFunction.m   OK
+evalRe.m                OK
+computeR.m              OK
+convective_u.m          OK
+diffusive_u.m           OK
+timeStep.m              OK
+evalUp.m                OK
+
+
+
 

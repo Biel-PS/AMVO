@@ -1,90 +1,48 @@
+%% NS_PartB.m
+
+% Implementation of preassure-velocity coupling
+% Author: Biel Pujadas Suriol & Pau Andrés Pérez, 2025
 clear; clc; close all;
 
 L = 1;
 tau = 1;
 syms x y
 
-elementNumberVector = 4;
-elementSizeVector = L./elementNumberVector;
+N = 4;
 
 [u,v] = set_velocity_field();
 
 u_num = matlabFunction(u, 'Vars',[x y]);
 v_num = matlabFunction(v, 'Vars', [x y]);
-    
-for N = elementNumberVector
 
-    h = L/N;
-    
-    U = zeros (N+2,N+2);
-    V = zeros (N+2,N+2);
-    
-    for i = 2:(N+1)
-        for j = 2:(N+1)
-            pointU = [(i-2)*h + h  ,  (j-2)*h + h/2];
-            pointV = [(i-2)*h + h/2  , (j-2)*h + h];
-           
-            U(i,j) = u_num(pointU(1),pointU(2));
-            V(i,j) = v_num(pointV(1),pointV(2));
+h = L/N;
 
-         end
-        
+U = zeros (N+2,N+2);
+V = zeros (N+2,N+2);
+
+for i = 2:(N+1)
+    for j = 2:(N+1)
+        pointU = [(i-2)*h + h  ,  (j-2)*h + h/2];
+        pointV = [(i-2)*h + h/2  , (j-2)*h + h];
+
+        U(i,j) = u_num(pointU(1),pointU(2));
+        V(i,j) = v_num(pointV(1),pointV(2));
+
     end
-
-    U = halo_updateFuncion(U);
-    V = halo_updateFuncion(V);
-
-    % U = [0 0 0 0 0; 0 0 0 0 0; 0 0 1 0 0; 0 0 0 0 0; 0 0 0 0 0];
-    % V = [0 0 0 0 0; 0 0 0 0 0; 0 0 0 0 0; 0 0 0 0 0; 0 0 0 0 0];
-
-    N = size(U,1)-2;
-    h = L/N;
-
-    
-    d = diverg(U,V).*h;
-
-    b = field2vector(d);
-
-    A = laplacianMatrix(N);
-    
-    A(1,1) = -5;
-
-    p = A\transpose(b);
-
-    s = vector2field(p);
-
-    s = halo_updateFuncion(s);
-
-    [gx,gy] = gradP(s,h);
-   
-
-    gx = halo_updateFuncion(gx);
-    gy = halo_updateFuncion(gy);
-    
-    ddd = diverg2(gx,gy,h);
-
-
-
-    Unew = U - gx;
-    Vnew = V - gy;
-  
-    Unew = halo_updateFuncion(Unew);
-    Vnew = halo_updateFuncion(Vnew);
-
-    divVelocityField = diverg2(Unew,Vnew,h);
 end
 
-% 
-% 
-% pointP = [(i-2)*h + h/2, [(j-2)*h + h/2]
-% %%
-% 
-% %
-% 
-% %p = A.^-1 * b;
-% 
-% %d = vector2field(p);
-% 
-% [g] = gradient(d);
-% 
-% u = u_p + g;
+% U = [0 0 0 0 0; 0 0 0 0 0; 0 0 1 0 0; 0 0 0 0 0; 0 0 0 0 0];
+% V = [0 0 0 0 0; 0 0 0 0 0; 0 0 0 0 0; 0 0 0 0 0; 0 0 0 0 0];
+
+U = halo_updateFuncion(U);
+V = halo_updateFuncion(V);
+
+u_p(:,:,1) = U;
+u_p(:,:,2) = V;
+
+N = size(U,1)-2;
+h = L/N;
+
+[u_new, divVelocityField, s] = computeP(h, N, u_p);
+
+

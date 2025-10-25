@@ -1,3 +1,7 @@
+%% NS_PartC.m
+
+% Time implementation of Part B. 
+% Author: Biel Pujadas Suriol & Pau Andrés Pérez, 2025
 clear; clc; close all;
 
 rho = 1.225;
@@ -28,9 +32,10 @@ F_test = matlabFunction(F);
 p_sym = (cos(2*pi*x))^2/2 + (cos(2*pi*y))^2/2;
 
 
-
-% Convertir a funciones numéricas
 p_num  = matlabFunction(p_sym,  'Vars', [x, y]);
+
+F_testing = zeros(length(T),1);
+deltaT = zeros(length(T),1);
 
 for i = 1:1:length(T)
     F_testing(i) = F_test(T(i));

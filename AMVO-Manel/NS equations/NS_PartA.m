@@ -44,11 +44,8 @@ for N = elementNumberVector
     
     for i = 2:(N+1)
         for j = 2:(N+1)
-            pointU = [(i-2)*h + h,    (j-2)*h + h/2];
-            pointV = [(i-2)*h + h/2,  (j-2)*h + h];
-           
-            U(i,j) = u_num(pointU(1), pointU(2));
-            V(i,j) = v_num(pointV(1), pointV(2));
+            
+            [U,V] = compute_u(u_num,v_num,N,h);
 
             DU_analytic(i,j) = tau * du_analytic(pointU(1), pointU(2));
             CU_analytic(i,j) = cu_analytic(pointU(1), pointU(2));
