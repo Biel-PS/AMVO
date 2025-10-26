@@ -21,12 +21,13 @@ error_diffusiveV  = zeros(size(elementNumberVector));
 counter = 1;
 
 [u,v] = set_velocity_field();
+v = v*1;
 
 du_analytic = matlabFunction(diffusive_u_sym(u), 'Vars',[x y]);
-cu_analytic = matlabFunction(convective_u_sym(u,v,x,y), 'Vars',[x y]);
+cu_analytic = matlabFunction(convective_u_sym(u,v,x,y,'div'), 'Vars',[x y]);
 
 dv_analytic = matlabFunction(diffusive_u_sym(v), 'Vars',[x y]);
-cv_analytic = matlabFunction(convective_u_sym(v,u,y,x), 'Vars',[x y]);
+cv_analytic = matlabFunction(convective_u_sym(v,u,y,x,'div'), 'Vars',[x y]);
 
 u_num = matlabFunction(u, 'Vars',[x y]);
 v_num = matlabFunction(v, 'Vars',[x y]);
@@ -44,8 +45,9 @@ for N = elementNumberVector
     
     for i = 2:(N+1)
         for j = 2:(N+1)
-            
-            [U,V] = compute_u(u_num,v_num,N,h);
+
+            pointU = [(i-2)*h + h,   (j-2)*h + h/2];
+            pointV = [(i-2)*h + h/2, (j-2)*h + h];
 
             DU_analytic(i,j) = tau * du_analytic(pointU(1), pointU(2));
             CU_analytic(i,j) = cu_analytic(pointU(1), pointU(2));
@@ -53,6 +55,7 @@ for N = elementNumberVector
             CV_analytic(i,j) = cv_analytic(pointV(1), pointV(2));
         end
     end
+    [U,V] = compute_u(u_num,v_num,N,h);
 
     U = halo_updateFuncion(U);
     V = halo_updateFuncion(V);
@@ -73,19 +76,22 @@ end
 
 %% Plot results
 figure;
-loglog(elementSizeVector, error_diffusive, 'r', 'DisplayName', 'Error diffusive u'); 
+loglog(elementSizeVector, error_diffusive, 'm', 'DisplayName', 'Error diffusive u'); 
 hold on;
 loglog(elementSizeVector, error_convective, 'b', 'DisplayName', 'Error convective u');
 loglog(elementSizeVector, elementSizeVector.^2, 'k--', 'DisplayName', 'h^2'); 
 loglog(elementSizeVector, error_diffusiveV, '--g', 'DisplayName', 'Error diffusive v'); 
-loglog(elementSizeVector, error_convectiveV, '--y', 'DisplayName', 'Error convective v');
+loglog(elementSizeVector, error_convectiveV, '--r', 'DisplayName', 'Error convective v');
+legend('Location','northwest','FontSize',10);
+
 legend show
 xlabel('Grid size (h)')
 ylabel('Error')
 title('Convergence of convective and diffusive terms')
 grid on;
 hold off
-
+set(gca,'LooseInset',get(gca,'TightInset'));
+print(gcf,'-dsvg','convergence.svg');
 
 % 
 % print_field(U);

@@ -10,6 +10,7 @@ syms x y
 
 N = 4;
 
+
 [u,v] = set_velocity_field();
 
 u_num = matlabFunction(u, 'Vars',[x y]);

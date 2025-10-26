@@ -1,7 +1,7 @@
-function [U,V] = compute_u(u_num,v_num,N,h)
-% [U,V] = compute_u(u_num,v_num,N,h)
+function [U,V,pointU,pointV] = compute_u(u_num,v_num,N,h)
+% [U,V,pointU,pointV] = compute_u(u_num,v_num,N,h)
 % Computes staggered 2D velocity fields from analytical functions
-% Author: Biel Pujadas, 2025
+% Author: Biel Pujadas Suriol, 2025
 %
 % Input:
 %   u_num, v_num : function handles for the analytical u and v velocities
@@ -9,7 +9,7 @@ function [U,V] = compute_u(u_num,v_num,N,h)
 %   h            : grid spacing
 %
 % Output:
-%   U, V : 2D velocity fields with halo cells, staggered on the grid
+%   U, V : 2D velocity fields with halo cells, staggered on the grid.
 
     U = zeros(N+2, N+2);
     V = zeros(N+2, N+2);
