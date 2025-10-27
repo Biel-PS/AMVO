@@ -18,7 +18,7 @@ function [u_new, divVelocityField, s] = computeP(h, N, u_p)
     V = u_p(:,:,2);
     
 
-    d = diverg(U,V) * h;
+    d = diverg(U,V) .* h;
     
     % Convert divergence to vector and build Laplacian matrix
     b = field2vector(d);
@@ -29,10 +29,12 @@ function [u_new, divVelocityField, s] = computeP(h, N, u_p)
    
     % Convert solution vector to 2D pressure field
     s = vector2field(p);
+    
     s = halo_updateFuncion(s);
     
     % Compute pressure gradients
     [gx, gy] = gradP(s, h);
+
     gx = halo_updateFuncion(gx);
     gy = halo_updateFuncion(gy);
         
